@@ -100,7 +100,7 @@ def authentification():
                 WebDriverWait(driver,60).until(EC.presence_of_element_located((By.ID,'hplogo')))
                 break
             except:
-                print "On passe la deuxième..."
+                print("On passe la deuxième...")
 
         urlcode=driver.current_url #Récupère l'URL contenant le code d'authentification
 
@@ -112,7 +112,7 @@ def authentification():
             pass
         else:
             etat="Erreur: Problème de sécurité lors de l'authentifiaction! Recommencer"
-            print etat
+            print(etat)
             continue
 
         #Récupération du code dans l'url
@@ -121,13 +121,13 @@ def authentification():
             code=regexcode.findall(urlcode)[0].split("=")[1]
         except:
             etat="Erreur: Il faut donner l'authorisation à l'application pour pouvoir continuer"
-            print etat
+            print(etat)
             continue
             # code=urlcode.split("code=")[1]
 
         #Requete via request pour obtenir le json avec l'acces token de l'utilisateur
         etat="Autorisation accordée"
-        print etat
+        print(etat)
         auth=requests.post("https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=4866729400791483761&client_secret=b87ec2a5fbde804a3a78c25d617da3e2eb386c409555d5156860fc3a6903d45f&code="+str(code)).json() #jason contenant le token et autre donnée lié a l'authentifiaction de plus #Les paramêtre client_id et client_secret sont propore à l'application enregistrée sur pinterest
         token=auth['access_token'] #récupère la valeur du token dans le dico auth
         cookies, s=get_cookies(driver)
@@ -248,12 +248,12 @@ def get_cookies(driver):
     driver.get('https://www.pinterest.com/')
     time.sleep(1)
     cookies=driver.get_cookies()
-    print "Les cookies Pinterest de l'utilisateur ont été enregistrés"
+    print("Les cookies Pinterest de l'utilisateur ont été enregistrés")
 
     s = requests.Session()
     for cookie in cookies:
         s.cookies.set(cookie['name'], cookie['value'])
-    print "Transfert des cookies Pinterest de Selenium à la session requests 's' réussi"
+    print("Transfert des cookies Pinterest de Selenium à la session requests 's' réussi")
 
     return cookies, s
 
@@ -306,23 +306,23 @@ def processbar(i):
     """Fonction qui affiche et actualise "Processing ..."""
     if i==100: #start
         sys.stdout.write("\033[K")
-        print "Processing"
+        print("Processing")
         sys.stdout.flush()
 
     elif i==0:
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
-        print "Processing ."
+        print("Processing.")
         sys.stdout.flush()
     elif i==1:
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
-        print "Processing .."
+        print("Processing ..")
         sys.stdout.flush()
     elif i==2:
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[K")
-        print "Processing ..."
+        print("Processing ...")
         sys.stdout.flush()
     elif i==404: #end
         sys.stdout.write("\033[F")
@@ -407,7 +407,7 @@ def plot_results(db, collection, result_collection, name):
             }
         }, filename=collection +"_"+name+".html", auto_open= True)
     else:
-        print "Il n'y a aucun(e) " + name + " qui apparait plus d'une fois"
+        print("Il n'y a aucun(e) " + name + " qui apparait plus d'une fois")
 
 
 def get_extended(db, collection, user_collection, domain_collection):
@@ -484,7 +484,7 @@ def counter(liste):
             pert=compte[i]
         else:
             nopert=compte[i]
-        print '%s : %d' % (i, compte[i])
+        print('%s : %d' % (i, compte[i]))
 
     pourcent=(float(pert)/(float(pert)+float(nopert)))*float(100)
     print("Résultats pertinents: "+str(pourcent)+"%")
@@ -524,7 +524,7 @@ while(True):
         else:
             print("\nCollections existantes:")
             for collection in col:
-                print collection
+                print(collection)
         collection=raw_input("Dans quelle collection voulez-vous ajouter les recherches (crée si inexistante): ")
         choix="2"
 
@@ -558,7 +558,7 @@ while(True):
                     if 'message' in pin.keys():
                         sys.stdout.write("\033[F")
                         sys.stdout.write("\033[K")
-                        print str(pin['message'])+'\nLa prochaine requête peut être effectuée à '+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second)+"\n"
+                        print(str(pin['message'])+'\nLa prochaine requête peut être effectuée à '+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second)+"\n")
                         sys.stdout.flush()
                         break #Arrête de parcourir listepinID
                     else:
@@ -642,7 +642,7 @@ while(True):
                                 while(datetime.now()<limite):
                                     sys.stdout.write("\033[F")
                                     sys.stdout.write("\033[K")
-                                    print str(pin['message'])+'; La prochaine requête sera effectuée à '+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second)
+                                    print(str(pin['message'])+'; La prochaine requête sera effectuée à '+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second))
                                     sys.stdout.flush()
                                     time.sleep(1)
                                 pin = get_pin(pinID, token)
@@ -682,7 +682,7 @@ while(True):
                 else:
                     sys.stdout.write("\033[F")
                     sys.stdout.write("\033[K")
-                    print "La prochaine requête sera effectuée à "+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second)
+                    print("La prochaine requête sera effectuée à "+str(limite.hour)+":"+str(limite.minute)+":"+str(limite.second))
                     sys.stdout.flush()
                     time.sleep(1)
             except KeyboardInterrupt:
