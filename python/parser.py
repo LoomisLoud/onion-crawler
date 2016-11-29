@@ -50,9 +50,12 @@ def scrap_thread(html_data):
 		dates.append(date.get_text())
 		#fill thread name array
 		threads.append(thread)
+	assert(len(message_contents) == len(authors) == len(dates) == len(threads))
 
 	print("number of messages in this thread:", len(message_contents))
 	return message_contents, authors, dates, threads
+
+
 
 
 """
@@ -81,6 +84,8 @@ def get_n_pages(html_data):
 	if not text:
 		soup = BeautifulSoup(html_data, 'html.parser')
 		text = soup.find("span",{"class":"pageNavHeader"}).get_text()
+	if not text:
+		return 1
 	number = re.match(r'.*?of\s(\d+)$', text).group(1)
 	return int(number)
 
