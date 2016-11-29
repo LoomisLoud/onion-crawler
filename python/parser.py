@@ -59,13 +59,16 @@ def scrap_thread(html_data):
 input: html page of the list of threads (html code in a string)
 output: a list of strings contaning the url to each thread on the input page
 """
-def get_thread_urls(html_data):
-	soup = BeautifulSoup(html_data, 'lxml')
-	balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
-	links = []
-	for balise in balises_a:
-		links.append(balise['href'])
-	return links
+def get_thread_url(html_data):
+    soup = BeautifulSoup(html_data, 'lxml')
+    balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
+    links = []
+    for balise in balises_a:
+        link = balise['href']
+        if(link.endswith('unread')):
+            link = link[:-6]
+        links.append(link)
+    return links
 
 """
 This method gets the number of pages of a thread
