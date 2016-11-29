@@ -5,7 +5,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
-import os
+import os, hashlib
+from parser import *
 
 """
 This test program has for purpose to login, download and store pages
@@ -69,11 +70,14 @@ Walks through a thread, downloading the html and storing it in the database
 def go_and_walk_through_thread(driver, threads_page):
     print("Loading:", threads_page)
     driver.get(threads_page)
-    # thread_urls = calltoraphfunction using thread argument url
+    thread_urls = get_thread_urls(driver.page_source)
     for thread_page in thread_urls:
+        print("Parsing:", thread_page)
+        driver.get(URL + "forum/" + thread_page + "page-1")
+        pages_total = get_n_pages(driver.page_source)
+
         for i in range(1, pages_total + 1):
-            # pages_total = calltoraphfunctoinnumberpagesfrom source
-            print("Parsing:", thread_page, "page", str(i) + 1)
+            print("Parsing:", thread_page + "page-" + str(i + 1))
             driver.get(URL + "forum/" + thread_page + "page-" + str(i))
             html = driver.page_source
             hashed_html = hasher(html)
@@ -82,6 +86,7 @@ def go_and_walk_through_thread(driver, threads_page):
 """ Calculates the hash of the data using sha256. It is returned in HEX formatting."""
 def hasher(data):
     h = hashlib.sha256()
+    data = data.encode('utf-8')
     h.update(data)
     return h.hexdigest()
 
