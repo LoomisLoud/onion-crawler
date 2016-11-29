@@ -1,0 +1,6 @@
+tbselenium
+pymongo
+bs4
+selenium
+lxml
+hashlib

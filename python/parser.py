@@ -8,8 +8,6 @@ put it in a database using mongodb.
 """
 
 from bs4 import BeautifulSoup, NavigableString
-import pymongo
-from pymongo import MongoClient
 import re
 
 """
@@ -30,8 +28,6 @@ def scrap_thread(html_data):
 	# get thread name
 	thread = soup.find("div", {"class":"titleBar"})
 	thread = thread.find("h1").get_text()
-	print("thread:", thread)
-
 
 	for mi in message_info:
 		#soup = mi.descendants
@@ -52,11 +48,8 @@ def scrap_thread(html_data):
 		threads.append(thread)
 	assert(len(message_contents) == len(authors) == len(dates) == len(threads))
 
-	print("number of messages in this thread:", len(message_contents))
-	return message_contents, authors, dates, threads
-
-
-
+	current_page_data = [ (m, a, d, t) for m, a, d, t in zip(message_contents, authors, dates, threads) ]
+	return current_page_data
 
 """
 input: html page of the list of threads (html code in a string)
@@ -87,26 +80,3 @@ def get_n_pages(html_data):
 	number = re.match(r'.*?of\s(\d+)$', text).group(1)
 	return int(number)
 
-"""
-This method takes as inputs the data outputed by scrap_thread
-and for each message create a new document and stores it in the db.
-TODO: test this method
-"""
-def put_in_db(message_contents, authors, dates, threads, client, db):
-	docs = db.posts
-	for i in range(len(message_contents)):
-		doc = { "author":authors[i],
-				"content":message_contents[i],
-				"date":dates[i],
-				"thread":threads[i]}
-		doc_id = docs.insert_one(doc)
-	print("inserting done.")
-	print("test:", posts.find_one({"author":"higashi2014"}))
-
-
-"""
-some mongoDB shit-testing
-"""
-#client = MongoClient()
-#db = client.darkweb_db
-#put_in_db(m, a, d, t, client, db)
