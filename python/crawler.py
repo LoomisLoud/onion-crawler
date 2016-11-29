@@ -70,6 +70,7 @@ Walks through a thread, downloading the html and storing it in the database
 def go_and_walk_through_thread(driver, threads_page):
     print("Loading:", threads_page)
     driver.get(threads_page)
+    sleep(1000)
     thread_urls = get_thread_urls(driver.page_source)
     for thread_page in thread_urls:
         print("Parsing:", thread_page)
