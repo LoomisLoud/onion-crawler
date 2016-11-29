@@ -54,6 +54,25 @@ def scrap_thread(html_file):
 
 
 """
+This method takes as input the html page of the list of threads and outputs
+a list of strings contaning the url to each thread on the input page
+"""
+def get_thread_url(html_threads_list):
+	html_data = html_threads_list.read()
+	soup = BeautifulSoup(html_data, 'lxml')
+	balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
+	links = []
+	for balise in balises_a:
+		links.append(balise['href'])
+	return links
+
+
+# example on how to call the method:
+#file = open('threads_list.html', 'r', encoding="utf-8")
+#links = get_thread_url(file)
+
+
+"""
 This method takes as inputs the data outputed by scrap_thread
 and for each message create a new document and stores it in the db.
 TODO: test this method
@@ -70,9 +89,11 @@ def put_in_db(message_contents, authors, dates, threads, client, db):
 	print("test:", posts.find_one({"author":"higashi2014"}))
 
 
-
-html_file = open('posts_list.html', 'r', encoding="utf-8")
-m,a,d,t = scrap_thread(html_file)
-client = MongoClient()
-db = client.darkweb_db
-put_in_db(m, a, d, t, client, db)
+"""
+some mongoDB shit-testing
+"""
+#html_file = open('posts_list.html', 'r', encoding="utf-8")
+#m,a,d,t = scrap_thread(html_file)
+#client = MongoClient()
+#db = client.darkweb_db
+#put_in_db(m, a, d, t, client, db)
