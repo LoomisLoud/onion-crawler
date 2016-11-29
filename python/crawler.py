@@ -77,7 +77,7 @@ def go_and_walk_through_thread(driver, threads_page):
         pages_total = get_n_pages(driver.page_source)
 
         for i in range(1, pages_total + 1):
-            print("Parsing:", thread_page + "page-" + str(i + 1))
+            print("Parsing:", thread_page + "page-" + str(i))
             driver.get(URL + "forum/" + thread_page + "page-" + str(i))
             html = driver.page_source
             hashed_html = hasher(html)

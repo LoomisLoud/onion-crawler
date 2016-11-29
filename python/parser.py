@@ -80,10 +80,10 @@ output: the number of pages in the thread
 """
 def get_n_pages(html_data):
 	soup = BeautifulSoup(html_data, 'lxml')
-	text = soup.find("span",{"class":"pageNavHeader"})
-	if not text:
+	found = soup.find("span",{"class":"pageNavHeader"})
+	if not found:
 		return 1
-	text = text.get_text()
+	text = found.get_text()
 	number = re.match(r'.*?of\s(\d+)$', text).group(1)
 	return int(number)
 
