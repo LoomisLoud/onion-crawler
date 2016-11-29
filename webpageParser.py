@@ -18,54 +18,57 @@ input: html data of a thread page as a string
 output: 4 arrays (message_contents, authors, dates, thread)
 """
 def scrap_thread(html_data):
-	soup = BeautifulSoup(html_data, 'lxml')
+    soup = BeautifulSoup(html_data, 'lxml')
 
-	message_info = soup.findAll("div", {"class":"messageInfo"})
+    message_info = soup.findAll("div", {"class":"messageInfo"})
 
-	message_contents = []
-	authors = []
-	dates = []
-	threads = []
+    message_contents = []
+    authors = []
+    dates = []
+    threads = []
 
-	# get thread name
-	thread = soup.find("div", {"class":"titleBar"})
-	thread = thread.find("h1").get_text()
-	print("thread:", thread)
+    # get thread name
+    thread = soup.find("div", {"class":"titleBar"})
+    thread = thread.find("h1").get_text()
+    print("thread:", thread)
 
 
-	for mi in message_info:
-		#soup = mi.descendants
-		# scrap content
-		message_content = mi.find("blockquote", {"class":"messageText"})
-		#discard message text end marker
-		for elem in message_content:
-			if isinstance(elem, NavigableString):
-				break
-		message_contents.append(elem)
-		#scrap author
-		author = mi.find("a",{"class":"username author"})
-		authors.append(author.get_text())
-		#scrap message date
-		date = mi.find("span", {"class":"DateTime"})
-		dates.append(date.get_text())
-		#fill thread name array
-		threads.append(thread)
+    for mi in message_info:
+        #soup = mi.descendants
+        # scrap content
+        message_content = mi.find("blockquote", {"class":"messageText"})
+        #discard message text end marker
+        for elem in message_content:
+            if isinstance(elem, NavigableString):
+                break
+        message_contents.append(elem)
+        #scrap author
+        author = mi.find("a",{"class":"username author"})
+        authors.append(author.get_text())
+        #scrap message date
+        date = mi.find("span", {"class":"DateTime"})
+        dates.append(date.get_text())
+        #fill thread name array
+        threads.append(thread)
 
-	print("number of messages in this thread:", len(message_contents))
-	return message_contents, authors, dates, threads
+    print("number of messages in this thread:", len(message_contents))
+    return message_contents, authors, dates, threads
 
 
 """
 input: html page of the list of threads (html code in a string)
 output: a list of strings contaning the url to each thread on the input page
 """
-def get_thread_url(html_threads_list_data):
-	soup = BeautifulSoup(html_data, 'lxml')
-	balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
-	links = []
-	for balise in balises_a:
-		links.append(balise['href'])
-	return links
+def get_thread_url(html_data):
+    soup = BeautifulSoup(html_data, 'lxml')
+    balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
+    links = []
+    for balise in balises_a:
+        link = balise['href']
+        if(link.endswith('unread')):
+            link = link[:-6]
+        links.append(link)
+    return links
 
 
 # example on how to call the method:
@@ -79,14 +82,14 @@ input: html code of the thread
 output: the number of pages in the thread
 """
 def get_n_pages(html_data):
-	soup = BeautifulSoup(html_data, 'lxml')
-	#text contains "page X of Y". we need to extract Y
-	text = soup.find("span",{"class":"pageNavHeader"}).get_text()
-	number = re.match(r'.*?of\s(\d+)$', text).group(1)
-	return int(number)
+    soup = BeautifulSoup(html_data, 'lxml')
+    #text contains "page X of Y". we need to extract Y
+    text = soup.find("span",{"class":"pageNavHeader"}).get_text()
+    number = re.match(r'.*?of\s(\d+)$', text).group(1)
+    return int(number)
 
 #test
-file = open('posts_list.html', 'r', encoding="utf-8")
+file = open('temp.html', 'r', encoding="utf-8")
 data = file.read()
 print(get_n_pages(data))
 
@@ -98,15 +101,15 @@ and for each message create a new document and stores it in the db.
 TODO: test this method
 """
 def put_in_db(message_contents, authors, dates, threads, client, db):
-	docs = db.posts
-	for i in range(len(message_contents)):
-		doc = { "author":authors[i],
-				"content":message_contents[i],
-				"date":dates[i],
-				"thread":threads[i]}
-		doc_id = docs.insert_one(doc)
-	print("inserting done.")
-	print("test:", posts.find_one({"author":"higashi2014"}))
+    docs = db.posts
+    for i in range(len(message_contents)):
+        doc = { "author":authors[i],
+                "content":message_contents[i],
+                "date":dates[i],
+                "thread":threads[i]}
+        doc_id = docs.insert_one(doc)
+    print("inserting done.")
+    print("test:", posts.find_one({"author":"higashi2014"}))
 
 
 """
