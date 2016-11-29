@@ -10,12 +10,14 @@ put it in a database using mongodb.
 from bs4 import BeautifulSoup, NavigableString
 import pymongo
 from pymongo import MongoClient
+import re
 
 """
-this method scraps the given html thread file and outputs 4 arrays containing the data
+Goes through all the posts on the page and some data out of each post
+input: html data of a thread page as a string
+output: 4 arrays (message_contents, authors, dates, thread)
 """
-def scrap_thread(html_file):
-	html_data = html_file.read()
+def scrap_thread(html_data):
 	soup = BeautifulSoup(html_data, 'lxml')
 
 	message_info = soup.findAll("div", {"class":"messageInfo"})
@@ -54,11 +56,10 @@ def scrap_thread(html_file):
 
 
 """
-This method takes as input the html page of the list of threads and outputs
-a list of strings contaning the url to each thread on the input page
+input: html page of the list of threads (html code in a string)
+output: a list of strings contaning the url to each thread on the input page
 """
-def get_thread_url(html_threads_list):
-	html_data = html_threads_list.read()
+def get_thread_url(html_threads_list_data):
 	soup = BeautifulSoup(html_data, 'lxml')
 	balises_a = soup.findAll("a",{"class":"PreviewTooltip"})
 	links = []
@@ -69,7 +70,26 @@ def get_thread_url(html_threads_list):
 
 # example on how to call the method:
 #file = open('threads_list.html', 'r', encoding="utf-8")
-#links = get_thread_url(file)
+#data = file.read()
+#links = get_thread_url(data)
+
+"""
+This method gets the number of pages of a thread
+input: html code of the thread
+output: the number of pages in the thread
+"""
+def get_n_pages(html_data):
+	soup = BeautifulSoup(html_data, 'lxml')
+	#text contains "page X of Y". we need to extract Y
+	text = soup.find("span",{"class":"pageNavHeader"}).get_text()
+	number = re.match(r'.*?of\s(\d+)$', text).group(1)
+	return int(number)
+
+#test
+file = open('posts_list.html', 'r', encoding="utf-8")
+data = file.read()
+print(get_n_pages(data))
+
 
 
 """
@@ -93,7 +113,8 @@ def put_in_db(message_contents, authors, dates, threads, client, db):
 some mongoDB shit-testing
 """
 #html_file = open('posts_list.html', 'r', encoding="utf-8")
-#m,a,d,t = scrap_thread(html_file)
+#html_data = html_file.read()
+#m,a,d,t = scrap_thread(html_data)
 #client = MongoClient()
 #db = client.darkweb_db
 #put_in_db(m, a, d, t, client, db)
