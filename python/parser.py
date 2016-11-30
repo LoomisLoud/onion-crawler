@@ -27,23 +27,40 @@ def scrap_thread(html_data):
 
 	# get thread name
 	thread = soup.find("div", {"class":"titleBar"})
+	if thread is None:
+		thread = ""
+		print("a thread name could not be found!")
 	thread = thread.find("h1").get_text()
-
 	for mi in message_info:
-		#soup = mi.descendants
 		# scrap content
 		message_content = mi.find("blockquote", {"class":"messageText"})
 		#discard message text end marker
 		for elem in message_content:
 			if isinstance(elem, NavigableString):
 				break
+		if elem is None:
+			elem = ""
+			print("a message could not be found!")
 		message_contents.append(elem)
 		#scrap author
 		author = mi.find("a",{"class":"username author"})
-		authors.append(author.get_text())
+		if author is None:
+			authors.append("")
+			print("an author name could not be found!")
+		else:
+			authors.append(author.get_text())
 		#scrap message date
+		#note: sometimes the date is contained in a 'abbr' balise instead of 'span'
 		date = mi.find("span", {"class":"DateTime"})
-		dates.append(date.get_text())
+		if date is None:
+			date = mi.find("abbr", {"class":"DateTime"})
+			if date is None:
+				print("a date could not be found!")
+				dates.append("")
+			else:
+				dates.append(date.get_text())
+		else:
+			dates.append(date.get_text())
 		#fill thread name array
 		threads.append(thread)
 	assert(len(message_contents) == len(authors) == len(dates) == len(threads))
@@ -79,4 +96,3 @@ def get_n_pages(html_data):
 	text = found.get_text()
 	number = re.match(r'.*?of\s(\d+)$', text).group(1)
 	return int(number)
-
