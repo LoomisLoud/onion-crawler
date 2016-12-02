@@ -30,7 +30,8 @@ def scrap_thread(html_data):
 	if thread is None:
 		thread = ""
 		print("a thread name could not be found!")
-	thread = thread.find("h1").get_text()
+	else:
+		thread = thread.find("h1").get_text()
 	for mi in message_info:
 		# scrap content
 		message_content = mi.find("blockquote", {"class":"messageText"})
