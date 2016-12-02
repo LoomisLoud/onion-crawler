@@ -25,7 +25,15 @@ HTML_PAGES_COLLECTION_NAME = "html"
 THREADS_PAGES_NUMBER = 2
 
 # URLS
-URL = "http://pwoah7foa6au2pul.onion/"
+ALTERNATE_URLS = ["http://stbux7lrtpegcra2.onion/",
+"http://jsbpbdf6mpw6s2oz.onion/",
+"http://zdfvqospmrbvzdn3.onion/",
+"http://alphabaywyjrktqn.onion/",
+"http://sszoxp4dqmt24jng.onion/",
+"http://nracund2vx6lxzck.onion/",
+"http://lo4wpvx3tcdbqra4.onion/" ]
+# URL = "http://pwoah7foa6au2pul.onion/"
+URL = ALTERNATE_URLS[1]
 URL_FORUM_SERVICE = URL + "forum/index.php?forums/carding-services.83/page-"
 URL_LOGIN_FORUM = URL + "forum/index.php?login/"
 URL_CAPTCHA = URL + "challenge.php"
