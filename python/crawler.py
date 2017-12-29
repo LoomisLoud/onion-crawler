@@ -14,14 +14,16 @@ from pymongo import MongoClient
 import os, hashlib
 
 # A few credentials:
-USERNAME_CARDING_SERVICES = "cf0b5e141fd6a7ff19f"
-PASSWORD = "6d53f2e71f0ce3e796c756ffb46e424d"
-EMAIL = "cf0b5e141fd6a7ff19f@yopmail.com"
+USERNAME_CARDING_SERVICES = ""
+PASSWORD = ""
+EMAIL = ""
+
+# Databse
 DATABASE_NAME = "alphabay"
 POSTS_COLLECTION_NAME = "posts"
 HTML_PAGES_COLLECTION_NAME = "html"
 
-# Variables
+# Settings
 THREADS_PAGES_NUMBER = 2
 
 # URLS
@@ -32,7 +34,7 @@ ALTERNATE_URLS = ["http://stbux7lrtpegcra2.onion/",
 "http://sszoxp4dqmt24jng.onion/",
 "http://nracund2vx6lxzck.onion/",
 "http://lo4wpvx3tcdbqra4.onion/" ]
-# URL = "http://pwoah7foa6au2pul.onion/"
+
 URL = ALTERNATE_URLS[1]
 URL_FORUM_SERVICE = URL + "forum/index.php?forums/carding-services.83/page-"
 URL_LOGIN_FORUM = URL + "forum/index.php?login/"
